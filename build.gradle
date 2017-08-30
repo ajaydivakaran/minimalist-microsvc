@@ -43,6 +43,12 @@ configurations.all {
 	exclude group: "log4j", module: "log4j"
 }
 
+flyway {
+	url = 'jdbc:postgresql://localhost:5432/spikedb'
+	user = 'postgres'
+	password = 'postgres'
+}
+
 dependencies {
 	compile group: 'org.flywaydb', name: 'flyway-core', version: '4.2.0'
 	compile group: 'org.jdbi', name: 'jdbi', version: '2.78'
@@ -50,4 +56,5 @@ dependencies {
 	compile group: 'com.google.dagger', name: 'dagger', version: '2.11'
 	compile "ch.qos.logback:logback-classic:1.2.3"
 	compile "org.slf4j:log4j-over-slf4j:1.7.25"
+	compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
 }
