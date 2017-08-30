@@ -1,0 +1,53 @@
+buildscript {
+	ext {
+	}
+	repositories {
+		mavenCentral()
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
+	}
+	dependencies {
+		classpath "net.ltgt.gradle:gradle-apt-plugin:0.11"
+		classpath "gradle.plugin.com.boxfuse.client:flyway-release:4.2.0"
+		classpath "com.github.jengelman.gradle.plugins:shadow:2.0.1"
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'net.ltgt.apt'
+apply plugin: "org.flywaydb.flyway"
+apply plugin: "com.github.johnrengelman.shadow"
+
+version = '0.0.1-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+	jcenter()
+}
+
+shadowJar {
+	archiveName = project.name + "-" + version + ".jar"
+	exclude "test/"
+	manifest {
+		attributes("Main-Class": "com.spike.spikemicrosvc.Main")
+	}
+}
+
+
+configurations.all {
+	exclude group: "org.slf4j", module: "slf4j-log4j12"
+	exclude group: "log4j", module: "log4j"
+}
+
+dependencies {
+	compile group: 'org.flywaydb', name: 'flyway-core', version: '4.2.0'
+	compile group: 'org.jdbi', name: 'jdbi', version: '2.78'
+	compile group: 'com.sparkjava', name: 'spark-core', version: '2.6.0'
+	compile group: 'com.google.dagger', name: 'dagger', version: '2.11'
+	compile "ch.qos.logback:logback-classic:1.2.3"
+	compile "org.slf4j:log4j-over-slf4j:1.7.25"
+}
