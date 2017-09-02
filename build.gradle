@@ -49,12 +49,26 @@ flyway {
 	password = 'postgres'
 }
 
+sourceSets {
+	main {
+		java {
+			srcDirs = ["src/main/java/", "build/generated/source/apt/main"]
+		}
+	}
+	test {
+		java {
+			srcDirs = ["src/test/java"]
+		}
+	}
+}
+
 dependencies {
 	compile group: 'org.flywaydb', name: 'flyway-core', version: '4.2.0'
 	compile group: 'org.jdbi', name: 'jdbi', version: '2.78'
 	compile group: 'com.sparkjava', name: 'spark-core', version: '2.6.0'
 	compile group: 'com.google.dagger', name: 'dagger', version: '2.11'
+	compile group: 'com.google.dagger', name: 'dagger-compiler', version: '2.11'
 	compile "ch.qos.logback:logback-classic:1.2.3"
 	compile "org.slf4j:log4j-over-slf4j:1.7.25"
-	compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
+	compile group: 'org.postgresql', name: 'postgresql', version: '9.4.1212'
 }
