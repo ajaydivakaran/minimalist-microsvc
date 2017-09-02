@@ -1,5 +1,6 @@
 package com.spike.spikemicrosvc;
 
+import com.google.gson.Gson;
 import com.spike.spikemicrosvc.factory.module.PostGresModule;
 import dagger.Component;
 import org.flywaydb.core.Flyway;
@@ -9,6 +10,7 @@ import org.skife.jdbi.v2.util.StringColumnMapper;
 
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.util.HashMap;
 
 public class Main {
 
@@ -22,27 +24,24 @@ public class Main {
         final Flyway flyway = new Flyway();
         flyway.setDataSource("jdbc:postgresql://localhost:5432/devdb", "postgres", "postgres");
         flyway.migrate();
-//        final PGPoolingDataSource pgPoolingDataSource = new PGPoolingDataSource();
-//        PGSimpleDataSource source = new PGSimpleDataSource();
-//        source.setUser("postgres");
-//        source.setPassword("postgres");
-//        source.setUrl("jdbc:postgresql://localhost:5432/devdb");
-//        pgPoolingDataSource.initializeFrom(source);
-//        DBI dbi = new DBI(pgPoolingDataSource);
         new Main().run();
     }
 
     public void run() {
-
         Handle h = DaggerMain_App.create().provideDBI().open();
-        h.execute("insert into USERS (first_name) values (?)", "Brian");
+        final HashMap<String, String> map = new HashMap<>();
+        map.put("foo", "bar");
+        map.put("a", "b");
+        final Gson gson = new Gson();
+        final String json = gson.toJson(map);
+        h.execute("insert into USERS (first_name, context) values (?, to_json(?::json))", "Brian", json);
 
-        String name = h.createQuery("select first_name from USERS where id = :id")
+        String context = h.createQuery("select context from USERS where id = :id")
                 .bind("id", 1)
                 .map(StringColumnMapper.INSTANCE)
                 .first();
 
-        System.out.println(name);
+        System.out.println(gson.fromJson(context, HashMap.class));
 
         h.close();
     }
